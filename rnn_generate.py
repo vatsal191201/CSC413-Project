@@ -1,8 +1,10 @@
 import tensorflow as tf
 import pickle
 import os
-print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+import string
+from nltk.translate.bleu_score import sentence_bleu
 
+print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 
 ### Load Model Parameters and Weights ###
 
@@ -30,31 +32,32 @@ model = build_model(vocab_size, embedding_dim, rnn_units)
 model.load_weights(tf.train.latest_checkpoint('./training_checkpoints'))
 model.build(tf.TensorShape([1, None]))
 
-### Text Generation ###
+### Text Generation and BLEU Score Evaluation ###
 
 def generate_text(model, start_string, num_generate=500, temperature=1.0):
-    """Generate text given a start string."""
-    input_eval = [word2idx[s] for s in start_string.split()]
+    """Generate text given a start string and compute BLEU score."""
+    input_eval = [word2idx.get(s, 0) for s in start_string.split()]
     input_eval = tf.expand_dims(input_eval, 0)
 
     text_generated = []
-
     model.reset_states()
     for _ in range(num_generate):
         predictions = model(input_eval)
         predictions = tf.squeeze(predictions, 0) / temperature
         predicted_id = tf.random.categorical(predictions, num_samples=1)[-1, 0].numpy()
-
         input_eval = tf.expand_dims([predicted_id], 0)
         text_generated.append(idx2word[predicted_id])
 
-    return ' '.join(text_generated)
+    generated_text = ' '.join(text_generated)
+    reference_text = ['actual', 'lyrics', 'to', 'compare']  # Replace with actual lyrics for relevant evaluation
+    bleu_score = sentence_bleu([reference_text], generated_text.split(), weights=(0.25, 0.25, 0.25, 0.25))
+    return generated_text, bleu_score
 
 ### Input Handling and Text Generation ###
 
 def clean_and_split_input(input_text):
     """Preprocess and validate the user's input text."""
-    input_text = input_text.lower().translate(str.maketrans('', '', punctuation))
+    input_text = input_text.lower().translate(str.maketrans('', '', string.punctuation))
     words = input_text.split()
     non_vocab_words = [word for word in words if word not in vocab]
     return words, non_vocab_words
@@ -65,5 +68,7 @@ start_words, non_vocab_words = clean_and_split_input(start_string)
 if non_vocab_words:
     print(f"Words not in the vocabulary: {', '.join(non_vocab_words)}")
 else:
-    generated_text = generate_text(model, start_string=' '.join(start_words), num_generate=250)
+    generated_text, bleu_score = generate_text(model, start_string=' '.join(start_words), num_generate=250)
     print("\nGenerated text:\n", generated_text)
+    print("BLEU Score:", bleu_score)
+
