@@ -9,19 +9,6 @@ This repository contains the source code and dataset used in our study on the ap
 
 The aim of this project is to bridge the gap between artificial intelligence and artistic creativity, enabling the generation of rap lyrics that not only mimic Drake's style but also push the boundaries of automated creative writing. Our study evaluates these models based on qualitative assessments and quantitative metrics such as BLEU, Kappa score, and Cosine Similarity.
 
-## Repository Structure
-
-```
-/CSC413-Project
-|-- data/                 # Dataset directories
-|-- models/               # Trained models and their checkpoints
-|-- src/                  # Source code for training and evaluation
-|-- notebooks/            # Jupyter notebooks for experiments
-|-- results/              # Generated lyrics and performance metrics
-|-- LICENSE
-|-- README.md
-|-- requirements.txt      # List of dependencies
-```
 
 ## Models
 
