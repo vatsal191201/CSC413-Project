@@ -16,11 +16,6 @@ The aim of this project is to bridge the gap between artificial intelligence and
 - **XLNet**: Advanced model with permutation-based training designed to handle bidirectional contexts effectively.
 - **GPT-2**: Transformer-based model with superior performance in handling complex dependencies and stylistic nuances.
 
-## Contributing
-
-Contributions to this project are welcome. Please fork the repository, make your changes, and submit a pull request. For major changes, please open an issue first to discuss what you would like to change.
-
-
 ## Contact
 
 For any further queries or discussions, feel free to contact us:
